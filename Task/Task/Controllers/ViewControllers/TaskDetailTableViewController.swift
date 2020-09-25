@@ -34,12 +34,12 @@ class TaskDetailTableViewController: UITableViewController {
     
     // MARK: - Actions
     @IBAction func saveButtonTapped(_ sender: Any) {
-        guard let name = nameTextField.text, let dueDate = dueDateTextField.text, let notes = notesTextView.text, !name.isEmpty && !dueDate.isEmpty && !notes.isEmpty else {return}
+        guard let name = nameTextField.text, let dueDate = dueDateValue, let notes = notesTextView.text else {return}
         
         if let task = task {
-            TaskController.sharedInstance.update(task: task, name: name, notes: notes, due: dueDateValue)
+            TaskController.sharedInstance.update(task: task, name: name, notes: notes, due: dueDate)
         } else {
-            TaskController.sharedInstance.add(taskWithName: name, notes: notes, due: dueDateValue)
+            TaskController.sharedInstance.add(taskWithName: name, notes: notes, due: dueDate)
         }
         self.navigationController?.popViewController(animated: true)
     }

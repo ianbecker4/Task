@@ -16,9 +16,9 @@ class TaskController {
     init() {
         let request: NSFetchRequest<Task> = Task.fetchRequest()
         
-        request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        request.sortDescriptors = [NSSortDescriptor(key: "isComplete", ascending: true)]
         
-        let resultsController: NSFetchedResultsController<Task> = NSFetchedResultsController(fetchRequest: request, managedObjectContext: CoreDataStack.context, sectionNameKeyPath: nil, cacheName: nil)
+        let resultsController: NSFetchedResultsController<Task> = NSFetchedResultsController(fetchRequest: request, managedObjectContext: CoreDataStack.context, sectionNameKeyPath: "Complete", cacheName: nil)
         
         fetchedResultsController = resultsController
         
@@ -35,13 +35,13 @@ class TaskController {
     // CRUD Methods
     
     // Create
-    func add(taskWithName name: String, notes: String?, due: Date?) {
-        _ = Task(name: name, notes: notes ?? "", due: due ?? Date())
+    func add(taskWithName name: String, notes: String, due: Date) {
+        Task(name: name, notes: notes, due: due)
         saveToPersistentStore()
     }
     
     // Update
-    func update(task: Task, name: String, notes: String?, due: Date?) {
+    func update(task: Task, name: String, notes: String, due: Date) {
         task.name = name
         task.notes = notes
         task.due = due
@@ -50,23 +50,21 @@ class TaskController {
     
     // Delete
     func remove(task: Task) {
-        if let moc = task.managedObjectContext {
-            moc.delete(task)
-            saveToPersistentStore()
-        }
-    }
-    
-    func saveToPersistentStore() {
-        let moc = CoreDataStack.context
-        do {
-            try moc.save()
-        } catch let saveError {
-            print("There was an issue saving: \(saveError)")
-        }
-    }
-
-    func toggleIsCompleteFor(task: Task) {
-        task.isComplete = !task.isComplete
+        CoreDataStack.context.delete(task)
         saveToPersistentStore()
+}
+
+func saveToPersistentStore() {
+    let moc = CoreDataStack.context
+    do {
+        try moc.save()
+    } catch let saveError {
+        print("There was an issue saving: \(saveError)")
     }
+}
+
+func toggleIsCompleteFor(task: Task) {
+    task.isComplete = !task.isComplete
+    saveToPersistentStore()
+}
 } // End of class

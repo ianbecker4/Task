@@ -17,11 +17,6 @@ class TaskListTableViewController: UITableViewController {
         TaskController.sharedInstance.fetchedResultsController.delegate = self
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-//        tableView.reloadData()
-    }
-
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -53,15 +48,11 @@ class TaskListTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        
-        let sectionNumber = Int(TaskController.sharedInstance.fetchedResultsController.sections?[section].name ?? "Zero")
-        if sectionNumber == 0 {
-            return "Complete"
-        } else {
-            return "Incomplete"
-        }
-        
-//        return TaskController.sharedInstance.fetchedResultsController.sections?[section].name ?? "0"
+        return TaskController.sharedInstance.fetchedResultsController.sectionIndexTitles[section] == "0" ? "Incomplete" : "Complete"
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 30.0
     }
 
     // MARK: - Navigation
@@ -117,7 +108,11 @@ extension TaskListTableViewController: NSFetchedResultsControllerDelegate {
         case .delete:
             let indexSet = IndexSet(integer: sectionIndex)
             tableView.deleteSections(indexSet, with: .automatic)
-        default:
+        case .move:
+            break
+        case .update:
+            break
+        @unknown default:
             fatalError()
         }
 //        switch type {

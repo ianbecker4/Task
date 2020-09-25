@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol ButtonTableViewCellDelegate {
+protocol ButtonTableViewCellDelegate: class {
     func buttonCellButtonTapped(_ sender: ButtonTableViewCell)
 }
 
@@ -18,7 +18,7 @@ class ButtonTableViewCell: UITableViewCell {
     @IBOutlet weak var primaryLabel: UILabel!
     @IBOutlet weak var completeButton: UIButton!
     
-    var delegate: ButtonTableViewCellDelegate?
+    weak var delegate: ButtonTableViewCellDelegate?
     
     
     // MARK: - Actions
